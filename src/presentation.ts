@@ -36,11 +36,13 @@ export function resolvePresentationTokens(
     return {
       icon: iconSet.plain,
       styles: ["bold"],
+      secondaryStyles: terminal.colorEnabled ? ["dim"] : [],
     };
   }
 
   return {
     icon: iconSet[level],
     styles: terminal.colorEnabled ? COLOR_STYLES[level] : ["bold"],
+    secondaryStyles: terminal.colorEnabled ? ["dim"] : [],
   };
 }

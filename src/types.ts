@@ -20,6 +20,16 @@ export interface AlertCliCommand {
   bell: boolean;
 }
 
+export interface RunCliCommand {
+  kind: "run";
+  style: AlertStyle;
+  noColor: boolean;
+  bell: boolean;
+  command: string[];
+}
+
+export type FlareCliCommand = AlertCliCommand | RunCliCommand;
+
 export interface TerminalCapabilities {
   width: number;
   colorEnabled: boolean;
@@ -28,14 +38,29 @@ export interface TerminalCapabilities {
   bellSupported: boolean;
 }
 
+export interface RunResult {
+  command: string[];
+  durationMs: number;
+  exitCode: number | null;
+  signal: NodeJS.Signals | null;
+}
+
+export type RenderLineVariant = "primary" | "secondary";
+
+export interface RenderAlertLine {
+  text: string;
+  variant: RenderLineVariant;
+}
+
 export interface AlertPresentationTokens {
   icon: string;
   styles: AlertTextStyle[];
+  secondaryStyles: AlertTextStyle[];
 }
 
 export interface RenderAlertInput {
   style: AlertStyle;
-  message: string;
+  lines: RenderAlertLine[];
   width: number;
   truncateMarker: string;
   tokens: AlertPresentationTokens;

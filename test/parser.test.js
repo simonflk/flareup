@@ -33,6 +33,14 @@ test("parseArgv recognizes --style", () => {
   assert.equal(command.style, "banner");
 });
 
+test("parseArgv parses run mode and command arguments", () => {
+  const command = validateCommand(parseArgv(["run", "--style", "panel", "--", "echo", "hello"]));
+
+  assert.equal(command.kind, "run");
+  assert.equal(command.style, "panel");
+  assert.deepEqual(command.command, ["echo", "hello"]);
+});
+
 test("parseArgv rejects unknown status names when a status and message are provided", () => {
   assert.throws(() => parseArgv(["loud", "hello"]), /unknown status: loud/i);
 });
@@ -44,4 +52,5 @@ test("parseArgv rejects invalid style names", () => {
 test("validateCommand throws when the message is missing", () => {
   assert.throws(() => validateCommand(parseArgv([])), /message is required/i);
   assert.throws(() => validateCommand(parseArgv(["success"])), /message is required/i);
+  assert.throws(() => validateCommand(parseArgv(["run", "--"])), /command is required/i);
 });

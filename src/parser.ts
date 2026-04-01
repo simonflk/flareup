@@ -1,4 +1,4 @@
-import type { AlertCliCommand, AlertLevel } from "./types.js";
+import type { AlertCliCommand, AlertLevel, FlareCliCommand } from "./types.js";
 
 const ALERT_LEVELS = new Set<Exclude<AlertLevel, "plain">>([
   "success",
@@ -17,13 +17,16 @@ function isAlertStyle(value: string): value is AlertCliCommand["style"] {
   return ALERT_STYLES.has(value as AlertCliCommand["style"]);
 }
 
-export function parseArgv(argv: string[]): AlertCliCommand {
+export function parseArgv(argv: string[]): FlareCliCommand {
+  const separatorIndex = argv.indexOf("--");
+  const cliArgs = separatorIndex === -1 ? argv : argv.slice(0, separatorIndex);
+  const commandArgs = separatorIndex === -1 ? [] : argv.slice(separatorIndex + 1);
   const positionals: string[] = [];
   let noColor = false;
   let style: AlertCliCommand["style"] = "box";
 
-  for (let index = 0; index < argv.length; index += 1) {
-    const argument = argv[index];
+  for (let index = 0; index < cliArgs.length; index += 1) {
+    const argument = cliArgs[index];
 
     if (argument === "--no-color") {
       noColor = true;
@@ -55,6 +58,24 @@ export function parseArgv(argv: string[]): AlertCliCommand {
 
   if (positionals.length > 2) {
     throw new Error(`Unexpected argument: ${positionals[2]}`);
+  }
+
+  if (positionals[0] === "run") {
+    if (positionals.length > 1) {
+      throw new Error(`Unexpected argument: ${positionals[1]}`);
+    }
+
+    return {
+      kind: "run",
+      style,
+      noColor,
+      bell: false,
+      command: commandArgs,
+    };
+  }
+
+  if (separatorIndex !== -1) {
+    throw new Error("The -- separator is only valid with run mode.");
   }
 
   if (positionals.length === 2) {
@@ -96,10 +117,18 @@ export function parseArgv(argv: string[]): AlertCliCommand {
   };
 }
 
-export function validateCommand(command: AlertCliCommand): AlertCliCommand & { message: string } {
+export function validateCommand(command: FlareCliCommand): FlareCliCommand {
+  if (command.kind === "run") {
+    if (command.command.length === 0) {
+      throw new Error("A command is required after --.");
+    }
+
+    return command;
+  }
+
   if (!command.message || command.message.length === 0) {
     throw new Error("A message is required.");
   }
 
-  return command as AlertCliCommand & { message: string };
+  return command;
 }

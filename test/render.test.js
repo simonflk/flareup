@@ -11,12 +11,13 @@ function render(style, message, width = 20) {
   return stripAnsi(
     renderAlert({
       style,
-      message,
+      lines: [{ text: message, variant: "primary" }],
       width,
       truncateMarker: "…",
       tokens: {
         icon: "●",
         styles: [],
+        secondaryStyles: [],
       },
     }),
   );
@@ -68,4 +69,28 @@ test("renderer truncates long lines to the available width", () => {
   assert.match(box[1], /● abcde…/);
   assert.equal(banner[0].length, 12);
   assert.match(banner[1], /● abcde…/);
+});
+
+test("renderer preserves secondary lines for mixed summaries", () => {
+  const output = stripAnsi(
+    renderAlert({
+      style: "box",
+      lines: [
+        { text: "Command succeeded (1.2s)", variant: "primary" },
+        { text: "npm test", variant: "secondary" },
+      ],
+      width: 40,
+      truncateMarker: "…",
+      tokens: {
+        icon: "✓",
+        styles: [],
+        secondaryStyles: [],
+      },
+    }),
+  );
+
+  const lines = output.split("\n");
+
+  assert.match(lines[1], /✓ Command succeeded/);
+  assert.match(lines[2], /  npm test/);
 });
