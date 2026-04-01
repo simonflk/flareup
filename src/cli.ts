@@ -7,7 +7,7 @@ import { detectTerminalCapabilities } from "./terminal.js";
 
 function main(): void {
   const command = validateCommand(parseArgv(process.argv.slice(2)));
-  const terminal = detectTerminalCapabilities();
+  const terminal = detectTerminalCapabilities({ noColor: command.noColor });
   const tokens = resolvePresentationTokens(command.level, terminal);
   const output = renderAlert({
     style: command.style,
