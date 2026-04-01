@@ -25,7 +25,15 @@ export interface RunCliCommand {
   showError: boolean;
 }
 
-export type FlareCliCommand = AlertCliCommand | RunCliCommand;
+export interface HelpCliCommand {
+  kind: "help";
+}
+
+export interface VersionCliCommand {
+  kind: "version";
+}
+
+export type FlareCliCommand = AlertCliCommand | RunCliCommand | HelpCliCommand | VersionCliCommand;
 
 export interface TerminalCapabilities {
   width: number;

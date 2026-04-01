@@ -1,16 +1,19 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const cwd = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.join(cwd, "..");
 const cliPath = path.join(cwd, "..", ".test-dist", "cli.js");
+const BELL = String.fromCharCode(7);
 
 function runCli(args) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [cliPath, ...args], {
-      cwd: path.join(cwd, ".."),
+      cwd: repoRoot,
       env: {
         ...process.env,
         NO_COLOR: "1",
@@ -81,4 +84,27 @@ test("run mode supports custom messages and suppression flags", async () => {
   assert.equal(suppressedSuccessResult.stdout.trim(), "");
   assert.equal(suppressedErrorResult.code, 1);
   assert.equal(suppressedErrorResult.stdout.trim(), "");
+});
+
+test("bell, help, and version behave as documented", async () => {
+  const helpResult = await runCli(["--help"]);
+  const versionResult = await runCli(["--version"]);
+  const bellResult = await runCli(["--bell", "hello"]);
+  const silentBellResult = await runCli([
+    "run",
+    "--bell",
+    "--no-success",
+    "--",
+    "node",
+    "-e",
+    "process.exit(0)",
+  ]);
+  const packageJson = JSON.parse(await readFile(path.join(repoRoot, "package.json"), "utf8"));
+
+  assert.equal(helpResult.code, 0);
+  assert.match(helpResult.stdout, /flare run \[--success <msg>\]/);
+  assert.equal(versionResult.code, 0);
+  assert.equal(versionResult.stdout.trim(), packageJson.version);
+  assert.equal(bellResult.stdout.endsWith(BELL), true);
+  assert.equal(silentBellResult.stdout.trim(), "");
 });

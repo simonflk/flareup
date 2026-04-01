@@ -23,6 +23,7 @@ export function parseArgv(argv: string[]): FlareCliCommand {
   const commandArgs = separatorIndex === -1 ? [] : argv.slice(separatorIndex + 1);
   const positionals: string[] = [];
   let noColor = false;
+  let bell = false;
   let style: AlertCliCommand["style"] = "box";
   let successMessage: string | undefined;
   let errorMessage: string | undefined;
@@ -36,6 +37,19 @@ export function parseArgv(argv: string[]): FlareCliCommand {
     if (argument === "--no-color") {
       noColor = true;
       continue;
+    }
+
+    if (argument === "--bell") {
+      bell = true;
+      continue;
+    }
+
+    if (argument === "--help") {
+      return { kind: "help" };
+    }
+
+    if (argument === "--version") {
+      return { kind: "version" };
     }
 
     if (argument === "--style") {
@@ -103,7 +117,7 @@ export function parseArgv(argv: string[]): FlareCliCommand {
       kind: "run",
       style,
       noColor,
-      bell: false,
+      bell,
       command: commandArgs,
       successMessage,
       errorMessage,
@@ -133,7 +147,7 @@ export function parseArgv(argv: string[]): FlareCliCommand {
       style,
       message,
       noColor,
-      bell: false,
+      bell,
     };
   }
 
@@ -145,7 +159,7 @@ export function parseArgv(argv: string[]): FlareCliCommand {
       level: message,
       style,
       noColor,
-      bell: false,
+      bell,
     };
   }
 
@@ -155,11 +169,15 @@ export function parseArgv(argv: string[]): FlareCliCommand {
     style,
     message,
     noColor,
-    bell: false,
+    bell,
   };
 }
 
 export function validateCommand(command: FlareCliCommand): FlareCliCommand {
+  if (command.kind === "help" || command.kind === "version") {
+    return command;
+  }
+
   if (command.kind === "run") {
     if (command.command.length === 0) {
       throw new Error("A command is required after --.");

@@ -33,6 +33,13 @@ test("parseArgv recognizes --style", () => {
   assert.equal(command.style, "banner");
 });
 
+test("parseArgv recognizes --bell", () => {
+  const command = validateCommand(parseArgv(["success", "hello", "--bell"]));
+
+  assert.equal(command.kind, "direct");
+  assert.equal(command.bell, true);
+});
+
 test("parseArgv parses run mode and command arguments", () => {
   const command = validateCommand(parseArgv(["run", "--style", "panel", "--", "echo", "hello"]));
 
@@ -41,6 +48,11 @@ test("parseArgv parses run mode and command arguments", () => {
   assert.deepEqual(command.command, ["echo", "hello"]);
   assert.equal(command.showSuccess, true);
   assert.equal(command.showError, true);
+});
+
+test("parseArgv short-circuits help and version flags", () => {
+  assert.deepEqual(parseArgv(["--help"]), { kind: "help" });
+  assert.deepEqual(parseArgv(["run", "--version"]), { kind: "version" });
 });
 
 test("parseArgv accepts run-specific message and suppression flags", () => {
@@ -63,6 +75,7 @@ test("parseArgv accepts run-specific message and suppression flags", () => {
   assert.equal(command.errorMessage, "nope");
   assert.equal(command.showSuccess, false);
   assert.equal(command.showError, true);
+  assert.equal(command.bell, false);
 });
 
 test("parseArgv rejects unknown status names when a status and message are provided", () => {
