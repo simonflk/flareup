@@ -2,14 +2,7 @@ export type AlertLevel = "plain" | "success" | "error" | "warn" | "info" | "debu
 
 export type AlertStyle = "box" | "banner" | "callout" | "line" | "minimal" | "panel";
 
-export type AlertTextStyle =
-  | "bold"
-  | "green"
-  | "red"
-  | "yellow"
-  | "magenta"
-  | "cyan"
-  | "dim";
+export type AlertTextStyle = "bold" | "green" | "red" | "yellow" | "magenta" | "cyan" | "dim";
 
 export interface AlertCliCommand {
   kind: "direct";

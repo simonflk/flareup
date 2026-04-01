@@ -2,24 +2,32 @@
   "name": "flare-cli",
   "version": "0.1.0",
   "description": "Styled terminal alerts for direct messages and wrapped commands.",
-  "type": "module",
   "bin": {
     "flare": "./dist/cli.js"
-  },
-  "engines": {
-    "node": ">=20"
   },
   "files": [
     "dist"
   ],
+  "type": "module",
   "scripts": {
     "build": "tsup src/cli.ts --format esm --clean --out-dir dist",
     "build:test": "tsc --project tsconfig.test.json",
-    "test": "npm run build:test && node --test"
+    "format": "oxfmt --write package.json .oxfmtrc.json .oxlintrc.json tsconfig.json tsconfig.test.json src test",
+    "format:check": "oxfmt --check package.json .oxfmtrc.json .oxlintrc.json tsconfig.json tsconfig.test.json src test",
+    "lint": "oxlint src test --deny-warnings",
+    "check": "npm run format:check && npm run lint",
+    "test": "npm run build:test && node --test",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/node": "^24.5.2",
+    "husky": "^9.1.7",
+    "oxfmt": "^0.43.0",
+    "oxlint": "^1.58.0",
     "tsup": "^8.5.0",
     "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

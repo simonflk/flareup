@@ -1,6 +1,11 @@
 import { styleText } from "node:util";
 
-import type { AlertTextStyle, RenderAlertInput, RenderAlertLine, RenderLineVariant } from "./types.js";
+import type {
+  AlertTextStyle,
+  RenderAlertInput,
+  RenderAlertLine,
+  RenderLineVariant,
+} from "./types.js";
 
 function applyStyles(text: string, styles: AlertTextStyle[]): string {
   if (styles.length === 0) {
@@ -72,7 +77,10 @@ function renderBoxLike(
   bottomRight: string,
   horizontal: string,
 ): string[] {
-  const top = applyStyles(`${topLeft}${horizontal.repeat(contentWidth + 2)}${topRight}`, input.tokens.styles);
+  const top = applyStyles(
+    `${topLeft}${horizontal.repeat(contentWidth + 2)}${topRight}`,
+    input.tokens.styles,
+  );
   const body = contentLines.map((line) => {
     const padded = line.text.padEnd(contentWidth, " ");
 
@@ -143,7 +151,9 @@ export function renderAlert(input: RenderAlertInput): string {
       ];
       break;
     case "minimal":
-      lines = contentLines.map((line) => applyStyles(line.text, styleForVariant(input, line.variant)));
+      lines = contentLines.map((line) =>
+        applyStyles(line.text, styleForVariant(input, line.variant)),
+      );
       break;
     case "panel":
       lines = [

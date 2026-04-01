@@ -3,8 +3,11 @@ import assert from "node:assert/strict";
 
 import { renderAlert } from "../.test-dist/render.js";
 
+const ESC = String.fromCharCode(27);
+const ANSI_ESCAPE_PATTERN = new RegExp(`${ESC}\\[[0-9;]*m`, "gu");
+
 function stripAnsi(value) {
-  return value.replace(/\u001B\[[0-9;]*m/g, "");
+  return value.replace(ANSI_ESCAPE_PATTERN, "");
 }
 
 function render(style, message, width = 20) {
