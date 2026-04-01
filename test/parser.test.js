@@ -39,6 +39,30 @@ test("parseArgv parses run mode and command arguments", () => {
   assert.equal(command.kind, "run");
   assert.equal(command.style, "panel");
   assert.deepEqual(command.command, ["echo", "hello"]);
+  assert.equal(command.showSuccess, true);
+  assert.equal(command.showError, true);
+});
+
+test("parseArgv accepts run-specific message and suppression flags", () => {
+  const command = validateCommand(
+    parseArgv([
+      "run",
+      "--success",
+      "yay",
+      "--error",
+      "nope",
+      "--no-success",
+      "--",
+      "echo",
+      "hello",
+    ]),
+  );
+
+  assert.equal(command.kind, "run");
+  assert.equal(command.successMessage, "yay");
+  assert.equal(command.errorMessage, "nope");
+  assert.equal(command.showSuccess, false);
+  assert.equal(command.showError, true);
 });
 
 test("parseArgv rejects unknown status names when a status and message are provided", () => {
@@ -47,6 +71,13 @@ test("parseArgv rejects unknown status names when a status and message are provi
 
 test("parseArgv rejects invalid style names", () => {
   assert.throws(() => parseArgv(["hello", "--style", "loud"]), /unknown style: loud/i);
+});
+
+test("parseArgv rejects run-only flags outside run mode", () => {
+  assert.throws(
+    () => parseArgv(["--success", "yay", "hello"]),
+    /run-only flags can only be used with run mode/i,
+  );
 });
 
 test("validateCommand throws when the message is missing", () => {

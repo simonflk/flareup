@@ -47,3 +47,38 @@ test("run mode propagates failure and prints the exit code", async () => {
   assert.equal(result.code, 1);
   assert.match(result.stdout, /Command failed \(exit 1,/);
 });
+
+test("run mode supports custom messages and suppression flags", async () => {
+  const successResult = await runCli([
+    "run",
+    "--success",
+    "yay",
+    "--",
+    "node",
+    "-e",
+    "process.exit(0)",
+  ]);
+  const suppressedSuccessResult = await runCli([
+    "run",
+    "--no-success",
+    "--",
+    "node",
+    "-e",
+    "process.exit(0)",
+  ]);
+  const suppressedErrorResult = await runCli([
+    "run",
+    "--no-error",
+    "--",
+    "node",
+    "-e",
+    "process.exit(1)",
+  ]);
+
+  assert.equal(successResult.code, 0);
+  assert.match(successResult.stdout, /yay/);
+  assert.equal(suppressedSuccessResult.code, 0);
+  assert.equal(suppressedSuccessResult.stdout.trim(), "");
+  assert.equal(suppressedErrorResult.code, 1);
+  assert.equal(suppressedErrorResult.stdout.trim(), "");
+});

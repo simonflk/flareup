@@ -13,7 +13,12 @@ async function main(): Promise<void> {
 
   if (command.kind === "run") {
     const result = await runCommand(command.command);
-    const summary = summarizeRunResult(result);
+    const summary = summarizeRunResult(result, {
+      successMessage: command.successMessage,
+      errorMessage: command.errorMessage,
+      showSuccess: command.showSuccess,
+      showError: command.showError,
+    });
 
     if (summary !== null) {
       const tokens = resolvePresentationTokens(summary.level, terminal);

@@ -19,6 +19,10 @@ export interface RunCliCommand {
   noColor: boolean;
   bell: boolean;
   command: string[];
+  successMessage?: string;
+  errorMessage?: string;
+  showSuccess: boolean;
+  showError: boolean;
 }
 
 export type FlareCliCommand = AlertCliCommand | RunCliCommand;

@@ -5,6 +5,13 @@ export interface RunSummary {
   lines: RenderAlertLine[];
 }
 
+export interface RunSummaryOptions {
+  successMessage?: string;
+  errorMessage?: string;
+  showSuccess: boolean;
+  showError: boolean;
+}
+
 function formatDuration(durationMs: number): string {
   if (durationMs < 1000) {
     return `${durationMs}ms`;
@@ -19,17 +26,25 @@ function formatDuration(durationMs: number): string {
   return `${seconds.toFixed(1)}s`;
 }
 
-export function summarizeRunResult(result: RunResult): RunSummary | null {
+export function summarizeRunResult(
+  result: RunResult,
+  options: RunSummaryOptions,
+): RunSummary | null {
   if (result.signal !== null) {
     return null;
   }
 
   if (result.exitCode === 0) {
+    if (!options.showSuccess) {
+      return null;
+    }
+
     return {
       level: "success",
       lines: [
         {
-          text: `Command succeeded (${formatDuration(result.durationMs)})`,
+          text:
+            options.successMessage ?? `Command succeeded (${formatDuration(result.durationMs)})`,
           variant: "primary",
         },
         {
@@ -40,11 +55,17 @@ export function summarizeRunResult(result: RunResult): RunSummary | null {
     };
   }
 
+  if (!options.showError) {
+    return null;
+  }
+
   return {
     level: "error",
     lines: [
       {
-        text: `Command failed (exit ${result.exitCode ?? 1}, ${formatDuration(result.durationMs)})`,
+        text:
+          options.errorMessage ??
+          `Command failed (exit ${result.exitCode ?? 1}, ${formatDuration(result.durationMs)})`,
         variant: "primary",
       },
       {

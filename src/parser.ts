@@ -24,6 +24,11 @@ export function parseArgv(argv: string[]): FlareCliCommand {
   const positionals: string[] = [];
   let noColor = false;
   let style: AlertCliCommand["style"] = "box";
+  let successMessage: string | undefined;
+  let errorMessage: string | undefined;
+  let showSuccess = true;
+  let showError = true;
+  let usedRunFlag = false;
 
   for (let index = 0; index < cliArgs.length; index += 1) {
     const argument = cliArgs[index];
@@ -49,6 +54,35 @@ export function parseArgv(argv: string[]): FlareCliCommand {
       continue;
     }
 
+    if (argument === "--success" || argument === "--error") {
+      const value = cliArgs[index + 1];
+
+      if (!value) {
+        throw new Error(`Missing value for ${argument}`);
+      }
+
+      if (argument === "--success") {
+        successMessage = value;
+      } else {
+        errorMessage = value;
+      }
+
+      usedRunFlag = true;
+      index += 1;
+      continue;
+    }
+
+    if (argument === "--no-success" || argument === "--no-error") {
+      if (argument === "--no-success") {
+        showSuccess = false;
+      } else {
+        showError = false;
+      }
+
+      usedRunFlag = true;
+      continue;
+    }
+
     if (argument.startsWith("--")) {
       throw new Error(`Unknown flag: ${argument}`);
     }
@@ -71,7 +105,15 @@ export function parseArgv(argv: string[]): FlareCliCommand {
       noColor,
       bell: false,
       command: commandArgs,
+      successMessage,
+      errorMessage,
+      showSuccess,
+      showError,
     };
+  }
+
+  if (usedRunFlag) {
+    throw new Error("Run-only flags can only be used with run mode.");
   }
 
   if (separatorIndex !== -1) {
