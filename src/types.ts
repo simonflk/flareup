@@ -37,5 +37,6 @@ export interface RenderAlertInput {
   style: AlertStyle;
   message: string;
   width: number;
+  truncateMarker: string;
   tokens: AlertPresentationTokens;
 }

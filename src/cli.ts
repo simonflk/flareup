@@ -13,6 +13,7 @@ function main(): void {
     style: command.style,
     message: command.message,
     width: terminal.width,
+    truncateMarker: terminal.unicode ? "…" : "...",
     tokens,
   });
 

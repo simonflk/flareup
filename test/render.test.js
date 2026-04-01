@@ -7,24 +7,65 @@ function stripAnsi(value) {
   return value.replace(/\u001B\[[0-9;]*m/g, "");
 }
 
-test("box style renders three lines with box borders", () => {
-  const output = stripAnsi(
+function render(style, message, width = 20) {
+  return stripAnsi(
     renderAlert({
-      style: "box",
-      message: "hello",
-      width: 80,
+      style,
+      message,
+      width,
+      truncateMarker: "…",
       tokens: {
         icon: "●",
         styles: [],
       },
     }),
   );
+}
 
-  const lines = output.split("\n");
+test("box style renders three lines with box borders", () => {
+  const lines = render("box", "hello").split("\n");
 
   assert.equal(lines.length, 3);
   assert.match(lines[0], /^┌.*┐$/);
   assert.match(lines[1], /^│ .* │$/);
   assert.match(lines[2], /^└.*┘$/);
   assert.match(lines[1], /● hello/);
+});
+
+test("each style uses the expected chrome and width mode", () => {
+  const box = render("box", "hello", 20).split("\n");
+  const banner = render("banner", "hello", 20).split("\n");
+  const callout = render("callout", "hello", 20).split("\n");
+  const line = render("line", "hello", 20).split("\n");
+  const minimal = render("minimal", "hello", 20).split("\n");
+  const panel = render("panel", "hello", 20).split("\n");
+
+  assert.equal(box[0].length < 20, true);
+  assert.equal(banner[0].length, 20);
+  assert.equal(callout.length, 1);
+  assert.match(callout[0], /^│ /);
+  assert.equal(line[0], "─".repeat(20));
+  assert.equal(line[2], "─".repeat(20));
+  assert.equal(minimal[0], "● hello");
+  assert.equal(panel[0], "─".repeat(20));
+  assert.equal(panel[2], "═".repeat(20));
+});
+
+test("renderer supports multiline messages across styles", () => {
+  const box = render("box", "hello\nworld", 20).split("\n");
+  const minimal = render("minimal", "hello\nworld", 20).split("\n");
+
+  assert.equal(box.length, 4);
+  assert.match(box[1], /● hello/);
+  assert.match(box[2], /  world/);
+  assert.deepEqual(minimal, ["● hello", "  world"]);
+});
+
+test("renderer truncates long lines to the available width", () => {
+  const box = render("box", "abcdefghijklmno", 12).split("\n");
+  const banner = render("banner", "abcdefghijklmno", 12).split("\n");
+
+  assert.match(box[1], /● abcde…/);
+  assert.equal(banner[0].length, 12);
+  assert.match(banner[1], /● abcde…/);
 });

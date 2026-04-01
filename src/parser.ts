@@ -7,18 +7,42 @@ const ALERT_LEVELS = new Set<Exclude<AlertLevel, "plain">>([
   "info",
   "debug",
 ]);
+const ALERT_STYLES = new Set(["box", "banner", "callout", "line", "minimal", "panel"]);
 
 function isAlertLevel(value: string): value is Exclude<AlertLevel, "plain"> {
   return ALERT_LEVELS.has(value as Exclude<AlertLevel, "plain">);
 }
 
+function isAlertStyle(value: string): value is AlertCliCommand["style"] {
+  return ALERT_STYLES.has(value as AlertCliCommand["style"]);
+}
+
 export function parseArgv(argv: string[]): AlertCliCommand {
   const positionals: string[] = [];
   let noColor = false;
+  let style: AlertCliCommand["style"] = "box";
 
-  for (const argument of argv) {
+  for (let index = 0; index < argv.length; index += 1) {
+    const argument = argv[index];
+
     if (argument === "--no-color") {
       noColor = true;
+      continue;
+    }
+
+    if (argument === "--style") {
+      const styleName = argv[index + 1];
+
+      if (!styleName) {
+        throw new Error("Missing value for --style");
+      }
+
+      if (!isAlertStyle(styleName)) {
+        throw new Error(`Unknown style: ${styleName}`);
+      }
+
+      style = styleName;
+      index += 1;
       continue;
     }
 
@@ -43,7 +67,7 @@ export function parseArgv(argv: string[]): AlertCliCommand {
     return {
       kind: "direct",
       level,
-      style: "box",
+      style,
       message,
       noColor,
       bell: false,
@@ -56,7 +80,7 @@ export function parseArgv(argv: string[]): AlertCliCommand {
     return {
       kind: "direct",
       level: message,
-      style: "box",
+      style,
       noColor,
       bell: false,
     };
@@ -65,7 +89,7 @@ export function parseArgv(argv: string[]): AlertCliCommand {
   return {
     kind: "direct",
     level: "plain",
-    style: "box",
+    style,
     message,
     noColor,
     bell: false,

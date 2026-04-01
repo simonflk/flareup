@@ -27,8 +27,18 @@ test("parseArgv recognizes --no-color", () => {
   assert.equal(command.noColor, true);
 });
 
+test("parseArgv recognizes --style", () => {
+  const command = validateCommand(parseArgv(["success", "hello", "--style", "banner"]));
+
+  assert.equal(command.style, "banner");
+});
+
 test("parseArgv rejects unknown status names when a status and message are provided", () => {
   assert.throws(() => parseArgv(["loud", "hello"]), /unknown status: loud/i);
+});
+
+test("parseArgv rejects invalid style names", () => {
+  assert.throws(() => parseArgv(["hello", "--style", "loud"]), /unknown style: loud/i);
 });
 
 test("validateCommand throws when the message is missing", () => {
