@@ -10,12 +10,12 @@
     "styled",
     "terminal"
   ],
-  "homepage": "https://github.com/simonflk/flare-cli#readme",
-  "bugs": "https://github.com/simonflk/flare-cli/issues",
+  "homepage": "https://github.com/simonflk/flareup#readme",
+  "bugs": "https://github.com/simonflk/flareup/issues",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/simonflk/flare-cli.git"
+    "url": "https://github.com/simonflk/flareup.git"
   },
   "bin": {
     "flareup": "./dist/cli.js"
