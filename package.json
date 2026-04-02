@@ -1,11 +1,11 @@
 {
-  "name": "flare-cli",
+  "name": "flareup",
   "version": "0.1.0",
   "description": "Styled terminal alerts for direct messages and wrapped commands.",
   "keywords": [
     "alert",
     "cli",
-    "flare",
+    "flareup",
     "notification",
     "styled",
     "terminal"
@@ -18,7 +18,7 @@
     "url": "https://github.com/simonflk/flare-cli.git"
   },
   "bin": {
-    "flare": "./dist/cli.js"
+    "flareup": "./dist/cli.js"
   },
   "files": [
     "dist"

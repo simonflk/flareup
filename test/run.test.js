@@ -102,7 +102,7 @@ test("bell, help, and version behave as documented", async () => {
   const packageJson = JSON.parse(await readFile(path.join(repoRoot, "package.json"), "utf8"));
 
   assert.equal(helpResult.code, 0);
-  assert.match(helpResult.stdout, /flare run \[--success <msg>\]/);
+  assert.match(helpResult.stdout, /flareup run \[--success <msg>\]/);
   assert.equal(versionResult.code, 0);
   assert.equal(versionResult.stdout.trim(), packageJson.version);
   assert.equal(bellResult.stdout.endsWith(BELL), true);

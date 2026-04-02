@@ -1,4 +1,4 @@
-# flare
+# flareup
 
 Styled terminal alerts. Drop into any npm script for highly visible success, error, and info messages.
 
@@ -7,7 +7,14 @@ Zero runtime dependencies.
 ## Install
 
 ```bash
-npm install -D flare-cli
+npm install -D flareup
+```
+
+Or use directly with npx:
+
+```bash
+npx flareup success "Tests passed"
+npx flareup run -- npm test
 ```
 
 ## Usage
@@ -17,12 +24,12 @@ npm install -D flare-cli
 Display a styled message with a status level:
 
 ```bash
-flare "Something happened"           # plain (bold, no color)
-flare success "Tests passed"         # green
-flare error "Build failed"           # red
-flare warn "Slow query detected"     # yellow
-flare info "Deploying to staging"    # purple
-flare debug "Cache hit ratio: 94%"   # cyan
+flareup "Something happened"           # plain (bold, no color)
+flareup success "Tests passed"         # green
+flareup error "Build failed"           # red
+flareup warn "Slow query detected"     # yellow
+flareup info "Deploying to staging"    # purple
+flareup debug "Cache hit ratio: 94%"   # cyan
 ```
 
 ### Run mode
@@ -30,20 +37,20 @@ flare debug "Cache hit ratio: 94%"   # cyan
 Wrap a command. stdout/stderr stream through in real time. A styled summary appears when it finishes. Exits with the wrapped command's exit code.
 
 ```bash
-flare run -- npm test
+flareup run -- npm test
 ```
 
 Customize the messages:
 
 ```bash
-flare run --success "All good" --error "Tests broke" -- npm test
+flareup run --success "All good" --error "Tests broke" -- npm test
 ```
 
 Suppress output for one outcome:
 
 ```bash
-flare run --no-success -- npm test   # only show on failure
-flare run --no-error -- npm test     # only show on success
+flareup run --no-success -- npm test   # only show on failure
+flareup run --no-error -- npm test     # only show on success
 ```
 
 ### In package.json
@@ -51,9 +58,9 @@ flare run --no-error -- npm test     # only show on success
 ```json
 {
   "scripts": {
-    "test": "vitest && flare success 'Tests passed'",
-    "build": "flare run --no-success -- tsc --build",
-    "deploy": "flare run --success 'Deployed' --error 'Deploy failed' -- ./deploy.sh"
+    "test": "vitest && flareup success 'Tests passed'",
+    "build": "flareup run --no-success -- tsc --build",
+    "deploy": "flareup run --success 'Deployed' --error 'Deploy failed' -- ./deploy.sh"
   }
 }
 ```
@@ -63,18 +70,18 @@ flare run --no-error -- npm test     # only show on success
 Control the visual presentation with `--style`:
 
 ```bash
-flare --style box success "Done"       # light box (default)
-flare --style banner success "Done"    # double box, full terminal width
-flare --style callout success "Done"   # left vertical bar only
-flare --style line success "Done"      # horizontal rules
-flare --style minimal success "Done"   # icon + text, no decoration
-flare --style panel success "Done"     # single top rule, double bottom rule
+flareup --style box success "Done"       # light box (default)
+flareup --style banner success "Done"    # double box, full terminal width
+flareup --style callout success "Done"   # left vertical bar only
+flareup --style line success "Done"      # horizontal rules
+flareup --style minimal success "Done"   # icon + text, no decoration
+flareup --style panel success "Done"     # single top rule, double bottom rule
 ```
 
 Styles work in both direct and run mode:
 
 ```bash
-flare run --style banner -- npm test
+flareup run --style banner -- npm test
 ```
 
 ## Flags

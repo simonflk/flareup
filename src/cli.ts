@@ -10,8 +10,8 @@ import { getExitCode, runCommand } from "./run.js";
 import { detectTerminalCapabilities } from "./terminal.js";
 
 const HELP_TEXT = `Usage:
-  flare [<status>] [<message>] [flags]
-  flare run [--success <msg>] [--error <msg>] [--no-success] [--no-error] [flags] -- <command...>
+  flareup [<status>] [<message>] [flags]
+  flareup run [--success <msg>] [--error <msg>] [--no-success] [--no-error] [flags] -- <command...>
 
 Statuses:
   success, error, warn, info, debug
