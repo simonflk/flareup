@@ -10,13 +10,14 @@ const repoRoot = path.join(cwd, "..");
 const cliPath = path.join(cwd, "..", ".test-dist", "cli.js");
 const BELL = String.fromCharCode(7);
 
-function runCli(args) {
+function runCli(args, envOverrides = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [cliPath, ...args], {
       cwd: repoRoot,
       env: {
         ...process.env,
         NO_COLOR: "1",
+        ...envOverrides,
       },
     });
 
@@ -86,7 +87,7 @@ test("run mode supports custom messages and suppression flags", async () => {
   assert.equal(suppressedErrorResult.stdout.trim(), "");
 });
 
-test("bell, help, and version behave as documented", async () => {
+test("bell, notify, help, and version behave as documented", async () => {
   const helpResult = await runCli(["--help"]);
   const versionResult = await runCli(["--version"]);
   const bellResult = await runCli(["--bell", "hello"]);
@@ -103,6 +104,7 @@ test("bell, help, and version behave as documented", async () => {
 
   assert.equal(helpResult.code, 0);
   assert.match(helpResult.stdout, /flareup run \[--success <msg>\]/);
+  assert.match(helpResult.stdout, /--notify/);
   assert.equal(versionResult.code, 0);
   assert.equal(versionResult.stdout.trim(), packageJson.version);
   assert.equal(bellResult.stdout.endsWith(BELL), true);

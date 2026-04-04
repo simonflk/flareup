@@ -11,6 +11,7 @@ export interface AlertCliCommand {
   message?: string;
   noColor: boolean;
   bell: boolean;
+  notify: boolean;
 }
 
 export interface RunCliCommand {
@@ -18,6 +19,7 @@ export interface RunCliCommand {
   style: AlertStyle;
   noColor: boolean;
   bell: boolean;
+  notify: boolean;
   command: string[];
   successMessage?: string;
   errorMessage?: string;
@@ -40,7 +42,7 @@ export interface TerminalCapabilities {
   colorEnabled: boolean;
   unicode: boolean;
   isTTY: boolean;
-  bellSupported: boolean;
+  attentionMode: "osc9" | "osc777" | "bell";
 }
 
 export interface RunResult {

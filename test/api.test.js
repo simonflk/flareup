@@ -7,13 +7,14 @@ import path from "node:path";
 const cwd = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.join(cwd, "..");
 
-function runScript(code) {
+function runScript(code, envOverrides = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, ["--input-type=module", "-e", code], {
       cwd: repoRoot,
       env: {
         ...process.env,
         NO_COLOR: "1",
+        ...envOverrides,
       },
     });
 
@@ -68,6 +69,26 @@ test("alert appends bell character when bell option is set", async () => {
   assert.equal(result.code, 0);
   assert.match(result.stdout, /ding/);
   assert.equal(result.stdout.includes(String.fromCharCode(7)), true);
+});
+
+test("alert emits OSC 9 when notify option is set in a supported terminal", async () => {
+  const result = await runScript(
+    `
+      import { alert } from "${importPath("index.js")}";
+      Object.defineProperty(process.stdout, "isTTY", { value: true });
+      Object.defineProperty(process.stdout, "columns", { value: 80 });
+      alert("ding", { notify: true });
+    `,
+    {
+      TERM: "xterm-256color",
+      TERM_PROGRAM: "iTerm.app",
+    },
+  );
+  const osc9 = "\u001B]9;● ding\u001B\\";
+
+  assert.equal(result.code, 0);
+  assert.equal(result.stdout.includes(osc9), true);
+  assert.equal(result.stdout.includes(String.fromCharCode(7)), false);
 });
 
 test("run returns exitCode and durationMs", async () => {

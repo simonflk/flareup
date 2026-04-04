@@ -89,7 +89,8 @@ flareup run --style banner -- npm test
 | Flag | Description |
 |------|-------------|
 | `--style <name>` | Visual style: `box`, `banner`, `callout`, `line`, `minimal`, `panel` |
-| `--bell` | Play a terminal bell sound |
+| `--notify` | Trigger terminal attention using `OSC 9`, `OSC 777`, or BEL |
+| `--bell` | Play a terminal bell character |
 | `--no-color` | Disable color output |
 | `--help` | Show usage |
 | `--version` | Show version |
@@ -112,7 +113,7 @@ import { alert, run } from 'flareup'
 
 // Display a styled alert
 alert('Tests passed', { level: 'success' })
-alert('Build failed', { level: 'error', style: 'banner', bell: true })
+alert('Build failed', { level: 'error', style: 'banner', notify: true })
 alert('Something happened') // plain, default style
 
 // Wrap a command
@@ -135,7 +136,8 @@ await run(['npm', 'test'], {
 |--------|------|---------|-------------|
 | `level` | `AlertLevel` | `"plain"` | `success`, `error`, `warn`, `info`, `debug`, `plain` |
 | `style` | `AlertStyle` | `"box"` | `box`, `banner`, `callout`, `line`, `minimal`, `panel` |
-| `bell` | `boolean` | `false` | Play terminal bell |
+| `notify` | `boolean` | `false` | Trigger terminal attention using `OSC 9`, `OSC 777`, or BEL |
+| `bell` | `boolean` | `false` | Play a terminal bell character |
 | `noColor` | `boolean` | `false` | Disable color output |
 
 ### `run(command, options?)`
@@ -149,7 +151,8 @@ Returns `Promise<{ exitCode: number, durationMs: number }>`.
 | `noSuccess` | `boolean` | `false` | Suppress output on success |
 | `noError` | `boolean` | `false` | Suppress output on error |
 | `style` | `AlertStyle` | `"box"` | Visual style |
-| `bell` | `boolean` | `false` | Play terminal bell |
+| `notify` | `boolean` | `false` | Trigger terminal attention using `OSC 9`, `OSC 777`, or BEL |
+| `bell` | `boolean` | `false` | Play a terminal bell character |
 | `noColor` | `boolean` | `false` | Disable color output |
 
 ## Color support

@@ -14,7 +14,8 @@ Statuses:
 
 Flags:
   --style <name>  box | banner | callout | line | minimal | panel
-  --bell
+  --notify        Trigger terminal attention (OSC 9 / OSC 777 / BEL)
+  --bell          Play a terminal bell character
   --no-color
   --help
   --version`;
@@ -47,6 +48,7 @@ async function main(): Promise<void> {
       noError: !command.showError,
       style: command.style,
       bell: command.bell,
+      notify: command.notify,
       noColor: command.noColor,
     });
 
@@ -58,6 +60,7 @@ async function main(): Promise<void> {
     level: command.level,
     style: command.style,
     bell: command.bell,
+    notify: command.notify,
     noColor: command.noColor,
   });
 }

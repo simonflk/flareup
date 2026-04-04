@@ -8,7 +8,7 @@ const unicodeTerminal = {
   colorEnabled: true,
   unicode: true,
   isTTY: true,
-  bellSupported: true,
+  attentionMode: "bell",
 };
 
 test("presentation maps every status to the expected icon and style", () => {

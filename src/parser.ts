@@ -24,6 +24,7 @@ export function parseArgv(argv: string[]): FlareCliCommand {
   const positionals: string[] = [];
   let noColor = false;
   let bell = false;
+  let notify = false;
   let style: AlertCliCommand["style"] = "box";
   let successMessage: string | undefined;
   let errorMessage: string | undefined;
@@ -41,6 +42,11 @@ export function parseArgv(argv: string[]): FlareCliCommand {
 
     if (argument === "--bell") {
       bell = true;
+      continue;
+    }
+
+    if (argument === "--notify") {
+      notify = true;
       continue;
     }
 
@@ -118,6 +124,7 @@ export function parseArgv(argv: string[]): FlareCliCommand {
       style,
       noColor,
       bell,
+      notify,
       command: commandArgs,
       successMessage,
       errorMessage,
@@ -148,6 +155,7 @@ export function parseArgv(argv: string[]): FlareCliCommand {
       message,
       noColor,
       bell,
+      notify,
     };
   }
 
@@ -160,6 +168,7 @@ export function parseArgv(argv: string[]): FlareCliCommand {
       style,
       noColor,
       bell,
+      notify,
     };
   }
 
@@ -170,6 +179,7 @@ export function parseArgv(argv: string[]): FlareCliCommand {
     message,
     noColor,
     bell,
+    notify,
   };
 }
 
