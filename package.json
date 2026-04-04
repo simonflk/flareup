@@ -1,6 +1,6 @@
 {
   "name": "flareup",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Styled terminal alerts for direct messages and wrapped commands.",
   "keywords": [
     "alert",

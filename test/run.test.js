@@ -109,7 +109,7 @@ test("bell, notify, help, and version behave as documented", async () => {
   assert.match(helpResult.stdout, /--debug-terminal/);
   assert.equal(versionResult.code, 0);
   assert.equal(versionResult.stdout.trim(), packageJson.version);
-  assert.equal(bellResult.stdout.endsWith(BELL), true);
+  assert.match(bellResult.stdout, new RegExp(`${BELL}\n$`));
   assert.equal(debugResult.stdout.trim(), "");
   assert.match(debugResult.stderr, /Terminal Debug/);
   assert.match(debugResult.stderr, /is_tty: false/);

@@ -40,7 +40,7 @@ interface AttentionContent {
 function writeOutput(output: string, attention: string): void {
   const suffix = attention.length > 0 ? attention : "";
 
-  process.stdout.write(`${output}\n${suffix}`);
+  process.stdout.write(`${output}${suffix}\n`);
 }
 
 function buildLines(message: string): RenderAlertLine[] {
